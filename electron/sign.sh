@@ -26,6 +26,7 @@ INSTALLER_KEY="3rd Party Mac Developer Installer: Kang Teng-Chieh (GL35G6YCWG)"
 # The path of your plist files.
 CHILD_PLIST="./child.plist"
 PARENT_PLIST="./parent.plist"
+SERVER_PLIST="./server.plist"
 
 FRAMEWORKS_PATH="$APP_PATH/Contents/Frameworks"
 
@@ -65,7 +66,7 @@ codesign -s "$APP_KEY" -f --entitlements "$CHILD_PLIST" "$APP_PATH/Contents/Libr
 
 ## new # resources part 
 codesign -s "$APP_KEY" -f --entitlements "$CHILD_PLIST" "$APP_PATH/Contents/Resources/migration-engine-darwin"
-codesign -s "$APP_KEY" -f --entitlements "$CHILD_PLIST" "$APP_PATH/Contents/Resources/SwitchV-server-macos"
+codesign -s "$APP_KEY" -f --entitlements "$SERVER_PLIST" "$APP_PATH/Contents/Resources/SwitchV-server-macos"
 
 codesign -s "$APP_KEY" -f --entitlements "$CHILD_PLIST" "$APP_PATH/Contents/Resources/prisma/build/index.js"
 codesign -s "$APP_KEY" -f --entitlements "$CHILD_PLIST" "$APP_PATH/Contents/Resources/libquery_engine-darwin.dylib.node"

@@ -7,11 +7,13 @@ import {
   screen,
 } from 'electron';
 
+import settings from 'electron-settings';
+
 import { exec } from 'child_process';
 import { existsSync, readdirSync } from 'fs';
 // const fs = require('fs');
 
-import { TrayGenerator } from './TrayGenerator';
+import { TrayGenerator, isMAS } from './TrayGenerator';
 import { DBManager, isUnPackaged } from './DBManager';
 
 import { isDebug } from './utility';
@@ -359,10 +361,22 @@ ipcMain.on('open-folder-selector', async (event) => {
   try {
     const result = await dialog.showOpenDialog({
       properties: ['openDirectory'],
+      securityScopedBookmarks: true,
       // properties: ['openFile', 'multiSelections'],
     });
     console.log('result:', result);
-    const { filePaths } = result;
+    /** https://gist.github.com/ngehlert/74d5a26990811eed59c635e49134d669 */
+    const { canceled, filePaths, bookmarks } = result;
+    if (canceled || filePaths.length === 0) {
+      return;
+    }
+    if (bookmarks && bookmarks.length) {
+      // store the bookmark key
+      if (isMAS()) {
+        await settings.set('security-scoped-bookmark', bookmarks[0]);
+      }
+    }
+
     const folderPath = filePaths[0];
     // result: { canceled: false, filePaths: [ '/Users/grimmer/git' ] }
 
@@ -427,28 +441,37 @@ const trayToggleEvtHandler = () => {
     console.log('check db done. USE DBPATH:', DBManager.databaseFilePath);
   }
 
+  if (isMAS()) {
+    const securityBookmark = (await settings.get(
+      'security-scoped-bookmark',
+    )) as string;
+    if (securityBookmark) {
+      app.startAccessingSecurityScopedResource(securityBookmark);
+    }
+  }
+
   if (process.env.EMBEDSERVER || !isUnPackaged) {
     console.log('start server');
     process.env.DATABASE_URL = `file:${DBManager.databaseFilePath}`;
-    if (isDebug) {
-      console.log(
-        'start server:' + `${DBManager.serverFolderPath}/SwitchV-server-macos`,
-      );
-    }
-    // serverProcess = exec(
-    //   `${DBManager.serverFolderPath}/SwitchV-server-macos`,
-    //   { env: { DATABASE_URL: `file:${DBManager.databaseFilePath}` } },
-    //   (error, stdout, stderr) => {
-    //     // TODO: figure out it why it does not print out
-    //     // NOTE: if it is running smoothly, it will not print any logs. But if it seems that it happens to read db error,
-    //     // then it will show some logs
-    //     if (isDebug) {
-    //       console.log('print server log but seems it is never callbacked');
-    //       console.log(error, stderr);
-    //       console.log(stdout);
-    //     }
-    //   },
-    // );
+    // if (true) {
+    console.log(
+      'start server:' + `${DBManager.serverFolderPath}/SwitchV-server-macos`,
+    );
+    // }
+    serverProcess = exec(
+      `${DBManager.serverFolderPath}/SwitchV-server-macos`,
+      { env: { DATABASE_URL: `file:${DBManager.databaseFilePath}` } },
+      (error, stdout, stderr) => {
+        // TODO: figure out it why it does not print out
+        // NOTE: if it is running smoothly, it will not print any logs. But if it seems that it happens to read db error,
+        // then it will show some logs
+        if (isDebug) {
+          console.log('print server log but seems it is never callbacked');
+          console.log(error, stderr);
+          console.log(stdout);
+        }
+      },
+    );
   }
 
   let title = '';

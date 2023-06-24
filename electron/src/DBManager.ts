@@ -193,10 +193,14 @@ export class DBManager {
         console.log({ err });
       }
     }
-    process.env.PRISMA_INTROSPECTION_ENGINE_BINARY = ''; // introPath; // = process.env.PRISMA_INTROSPECTION_ENGINE_BINARY;
-    process.env.PRISMA_FMT_BINARY = ''; //fmtPath; // = process.env.PRISMA_FMT_BINARY;
-    process.env.PRISMA_QUERY_ENGINE_BINARY = ''; // queryBinaryPath; // = process.env.PRISMA_QUERY_ENGINE_BINARY;
-    process.env.PRISMA_QUERY_ENGINE_LIBRARY = ''; //queryLibaryPath; // = process.env.PRISMA_QUERY_ENGINE_LIBRARY;
+
+    if (DBManager.migrateExePath) {
+      /** this is to rollback the code withe the previous logic */
+      process.env.PRISMA_INTROSPECTION_ENGINE_BINARY = ''; // introPath; // = process.env.PRISMA_INTROSPECTION_ENGINE_BINARY;
+      process.env.PRISMA_FMT_BINARY = ''; //fmtPath; // = process.env.PRISMA_FMT_BINARY;
+      process.env.PRISMA_QUERY_ENGINE_BINARY = ''; // queryBinaryPath; // = process.env.PRISMA_QUERY_ENGINE_BINARY;
+      process.env.PRISMA_QUERY_ENGINE_LIBRARY = ''; //queryLibaryPath; // = process.env.PRISMA_QUERY_ENGINE_LIBRARY;
+    }
   }
 
   static getUsedVersion(): string {

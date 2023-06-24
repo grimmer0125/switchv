@@ -4,11 +4,11 @@ const path = require('path');
 
 // const prismaPath = require.resolve('prisma')
 
-function isMAS() {
+export function isMAS() {
   return process.mas || false;
 }
 
-const isMasStr = isMAS() ? 'mas' : 'nonMas';
+export const isMasStr = isMAS() ? 'mas' : 'nonMas';
 
 // ref:
 // https://blog.logrocket.com/building-a-menu-bar-application-with-electron-and-react/

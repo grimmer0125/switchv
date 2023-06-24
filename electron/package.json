@@ -1,7 +1,7 @@
 {
   "name": "SwitchV",
   "productName": "SwitchV",
-  "version": "1.0.9",
+  "version": "1.0.18",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
@@ -60,6 +60,7 @@
     "@atlaskit/dropdown-menu": "^11.5.10",
     "@atlaskit/popup": "^1.5.4",
     "@emotion/react": "^11.10.5",
+    "electron-settings": "^4.0.2",
     "electron-squirrel-startup": "^1.0.0",
     "prisma": "^4.1.1",
     "react": "^18.2.0",
