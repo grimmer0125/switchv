@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-$ pnpm install
+$ yarn install
 ```
 
 ## Running the app

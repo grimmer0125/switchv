@@ -1,6 +1,6 @@
 # SwitchV 
 
-Use this to quickly open and switch VSCode projects. 
+This tool is used to quickly open and switch VSCode projects. 
 
 ## Features
 
